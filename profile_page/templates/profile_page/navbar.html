@@ -1,0 +1,61 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'profile_page/css/navbar.css' %}">
+
+<div class="nav-custom sticky-top">
+
+    <noscript>
+        <div class="text-center bg-warning">
+            <p class="text-dark m-0">Alphagram needs JavaScript to work.</p>
+        </div>
+    </noscript>
+
+    <nav class="navbar navbar-expand-lg navbar-light container">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Alphagram</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <input class="form-control search-site" type="text" placeholder="Search" aria-label="Search" autocomplete="off" data-bs-toggle="modal" data-bs-target="#search-modal" disabled style="cursor: pointer;">
+                </ul>
+                {% if auth == None %}
+                <a href="/log-in/?next={{request.path}}" class="btn btn-primary btn-sm">Log in</a>
+                <a href="/sign-up/?next={{request.path}}" class="btn text-primary fw-bold">Sign up</a>
+
+                {% elif auth != None %}
+                <a href="/" class="nav-link text-dark"><i class="far fa-bell"></i></a>
+                <a href="#" class="nav-link text-dark" data-bs-toggle="modal" data-bs-target="#modal-site-options">
+                    <i class="fas fa-ellipsis-v"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</div>
+
+{% if auth == None %}
+<div class="fixed-bottom text-light" style="background-color: rgba(0, 0, 0, 0.7);">
+    <button type="button" class="btn-close" style="position: absolute;left: 9px;top: 9px;color: white;background-color: white;" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="container mt-2 d-flex">
+        <div>
+            <h3>Follow and see posts, make friends on Alphagram</h3>
+            <h6>Forever united, never separated.</h6>
+        </div>
+        <div class="mx-3">
+            <button class="button white">Log in</button>
+            <button class="white-in">Sign up</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+
+    
+
+</script>

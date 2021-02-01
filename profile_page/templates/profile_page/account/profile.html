@@ -1,0 +1,145 @@
+{% extends 'profile_page/account/base.html' %}
+
+{% block content %}
+
+<div class="container profile-container">
+    <div class="profile-div">
+        <form>
+            <div class="pers-det mb-4">
+                <h5>Personal Details</h5>
+                <div class="cnt">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control mb-2" placeholder="First name" value="{{auth.user.first_name}}">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control mb-2" placeholder="Last name" value="{{auth.user.last_name}}">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <textarea class="form-control" placeholder="Bio">{{auth.bio}}</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" placeholder="Instagram handle" value="{{auth.instagram_handle}}">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" placeholder="Twitter handle" value="{{auth.twitter_handle}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-photo-security mb-4">
+                <h5>Who can view your profile photo</h5>
+                <div class="cnt">
+                    <div class="profile-photo-lock">
+                        <div class="form-check">
+                            <input class="form-check-input" id="profile-photo-everyone" name="profile-photo" type="radio">
+                            <label class="form-check-label" for="profile-photo-everyone">
+                                Everyone
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="profile-photo-friends" name="profile-photo" type="radio">
+                            <label class="form-check-label" for="profile-photo-friends">
+                                Only your friends
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bio-security mb-4">
+                <h5>Who can view your profile bio</h5>
+                <div class="cnt">
+                    <div class="bio-lock">
+                        <div class="form-check">
+                            <input class="form-check-input" id="profile-bio-everyone" name="bio" type="radio">
+                            <label class="form-check-label" for="profile-bio-everyone">
+                                Everyone
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="profile-bio-friends" name="bio" type="radio">
+                            <label class="form-check-label" for="profile-bio-friends">
+                                Only your friends
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="post-security mb-4">
+                <h5>Who can view your posts</h5>
+                <div class="cnt">
+                    <div class="post-lock">
+                        <div class="form-check">
+                            <input class="form-check-input" id="posts-everyone" name="post-security" type="radio">
+                            <label class="form-check-label" for="posts-everyone">
+                                Everyone
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="posts-friends" name="post-security" type="radio">
+                            <label class="form-check-label" for="posts-friends">
+                                Only your friends
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="last-seen-sucurity mb-4">
+                <h5>Last online</h5>
+                <div class="cnt">
+                    <div class="last-seen-lock">
+                        <div class="form-check">
+                            <input class="form-check-input" id="last-online-everyone" name="last-online" type="radio">
+                            <label class="form-check-label" for="last-online-everyone">
+                                Everyone
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="last-online-friends" name="last-online" type="radio">
+                            <label class="form-check-label" for="last-online-friends">
+                                Only your friends
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="last-online-nobody" name="last-online" type="radio">
+                            <label class="form-check-label" for="last-online-nobody">
+                                Nobody
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn btn-primary btn-lg submit-btn" disabled>Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function setSettings() {
+        let settings = $.parseJSON($.parseHTML('{{auth.settings_profile_json}}')[0].wholeText);
+        let profile_photo = settings.profile_photo;
+        let profile_bio = settings.profile_bio;
+        let posts = settings.posts;
+        let last_online = settings.last_online;
+
+        document.querySelector(`#profile-photo-${profile_photo}`).checked = true;
+        document.querySelector(`#profile-bio-${profile_bio}`).checked = true;
+        document.querySelector(`#posts-${posts}`).checked = true;
+        document.querySelector(`#last-online-${last_online}`).checked = true;
+    }
+
+    setSettings();
+</script>
+
+{% endblock %}

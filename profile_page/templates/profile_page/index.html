@@ -1,0 +1,288 @@
+{% extends 'profile_page/base.html' %}
+
+{% block title %}{{visit.user.username}} · Alphagram{% endblock %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'profile_page/css/index.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container my-5">
+    <div class="prfl">
+        <div class="pr-c mb-4">
+            <div class="pr-1">
+                <div class="atr">
+                    <img width=260 height=260 src="/media/{{visit.avatar}}" alt>
+                </div>
+            </div>
+            <div class="pr-2">
+
+                <span class="p-name mt-3">{{visit.user.first_name}} {{visit.user.last_name}}</span>
+                <span class="u-name mb-3">@{{visit.user.username}}</span>
+
+                <div class="bio mb-3">
+                    <p>{{visit.bio}}</p>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stats mb-3 d-flex">
+                        <span class="text-dark stat-item d-block text-center mx-2" style="font-size: 1.1rem;margin-left: 0!important;">
+                            <strong class="d-block">18.3k</strong>
+                            <span class="d-block">posts</span>
+                        </span>
+                        <a href="followers/" class="text-dark stat-item d-block mx-2 text-center" style="font-size: 1.1rem;">
+                            <strong class="d-block">{{num_of_followers}}</strong>
+                            <span class="d-block">followers</span>
+                        </a>
+                        <a href="following/" class="text-dark stat-item d-block mx-2 text-center" style="font-size: 1.1rem;">
+                            <strong class="d-block">{{num_of_following}}</strong>
+                            <span class="d-block">following</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="atn-container">
+                    <div class="atn">
+                        {% if auth.user.username != visit.user.username %}
+
+                        {% if following == 0 %}
+                        <button name="follow" class="fo-b-mc button mb-2">Follow</button>
+                        {% elif following == 1 %}
+                        <button name="unfollow" class="fo-b-mc button mb-2">Unfollow</button>
+                        {% elif following == None %}
+                        <button onclick='logInmodalTitle("Log in to follow")' class="button mb-2"
+                            data-bs-toggle="modal" data-bs-target="#exampleModal">Follow</button>
+                        {% endif %}
+
+                        <button name="friend" class="fr-b-mc button black mb-2">Friend</button>
+
+                        {% elif auth.user.username == visit.user.username %}
+                        <a href="/account/" class="cs-p button mb-2">Settings</a>
+                        {% endif %}
+
+                        {% if auth.user.username != visit.user.username %}
+                        <button class="button mb-2"
+                            style="border: 1px solid black;color: white;background: linear-gradient(to left, #84b4fc, purple);">Send
+                            Message</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="k-c">
+            <div class="all-t-stats">
+                <div class="post-search mb-2">
+                    <div class="d-flex form-control p-0 px-2" style="border-radius: 0!important;box-shadow: none;">
+                        <span class="fa fa-search m-auto"></span>
+                        <input type="search" class="form-control w-100" style="border: none;box-shadow: none;" placeholder="Search posts...">
+                    </div>
+                </div>
+                {% if auth == None %}
+                <div class="wld-lk-loin white-div mb-2">
+                    <h5 class="text-center mb-3">New to Alphagram</h5>
+                    <p class="text-center">
+                        <a href="/sign-up/?next={{request.path}}" class="btn btn-primary rounded w-100"
+                            style="border-radius: 40px !important;">Sign Up</a>
+                    </p>
+                </div>
+                {% elif auth.user.username != visit.user.username %}
+                {% if rated == 0 %}
+                <div class="rating mb-2 white-div" style="font-size: 1.6rem;">
+                    <h6 class="mb-3"><strong>How do you rate this page</strong></h6>
+                    <div class="text-center d-flex" style="overflow: auto;">
+                        <button name="1" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
+                        <button name="2" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
+                        <button name="3" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
+                        <button name="4" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
+                        <button name="5" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <div class="data-side-container">
+                    <div class="data-side">
+                        <div class="community white-div mb-2">
+                            <h6 class="mb-3"><strong>Community</strong></h6>
+                            <p>
+                                <span class="d-block"><i class="fas fa-shoe-prints"></i> {{num_of_followers}} people
+                                    follow</span>
+                                <span class="d-block mt-1"><i class="far fa-thumbs-up"></i> {{num_of_total_likes}}
+                                    likes</span>
+                                <span class="d-block mt-1"><i class="far fa-eye"></i> 1.8M views</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if num_of_people_rated != 0 %}
+                <div class="rate-preview white-div mb-2" style="font-size: 1.6rem;">
+                    <h6 class="mb-3"><strong>Based on the rating of {{num_of_people_rated}} people</strong></h6>
+                    <div class="text-center d-flex" style="overflow: auto;">
+                        <span class="btn far fa-star" id="rating-star-1"
+                            style="font-size: inherit;cursor: auto;"></span>
+                        <span class="btn far fa-star" id="rating-star-2"
+                            style="font-size: inherit;cursor: auto;"></span>
+                        <span class="btn far fa-star" id="rating-star-3"
+                            style="font-size: inherit;cursor: auto;"></span>
+                        <span class="btn far fa-star" id="rating-star-4"
+                            style="font-size: inherit;cursor: auto;"></span>
+                        <span class="btn far fa-star" id="rating-star-5"
+                            style="font-size: inherit;cursor: auto;"></span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if visit.instagram_handle and visit.twitter_handle %}
+                <div class="about white-div mb-2">
+                    <h6 class="mb-3"><strong>About</strong></h6>
+                    {% if visit.instagram_handle %}
+                    <p><i class="fab fa-instagram"></i> <a target="_blank"
+                            href="https://instagram.com/{{visit.instagram_handle}}">{{visit.instagram_handle}}</a></p>
+                    {% endif %}
+                    {% if visit.twitter_handle %}
+                    <p><i class="fab fa-twitter"></i> <a target="_blank"
+                            href="https://twitter.com/{{visit.twitter_handle}}">{{visit.twitter_handle}}</a></p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="related-pages white-div mb-2">
+                    <h6 class="mb-3"><strong>Related Pages</strong></h6>
+                    <div class="related-page-div">
+                        <div class="mb-3 e-rp">
+                            <div class="d-flex">
+                                <img style="border-radius: 100%;" width=90 height=90 src="/media/owner/avatar/logo.jpg" alt="">
+                                <span class="d-block mx-3 m-auto">Apoorva</span>
+                            </div>
+                            <div class="btn-group w-100 mt-3" role="group">
+                                <button type="button" class="button mx-1">Follow</button>
+                                <button type="button" class="button mx-1">Visit page</button>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+
+                <div class="post-search-2 mt-5">
+                    <div class="d-flex form-control p-0 px-2" style="border-radius: 0!important;box-shadow: none;">
+                        <span class="fa fa-search m-auto"></span>
+                        <input type="search" class="form-control w-100" style="border: none;box-shadow: none;" placeholder="Search posts...">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="po-c">
+
+                {% for i in posts %}
+                <div class="e-pt">
+                    <button class="btn pb-0" data-bs-toggle="modal" data-bs-target="#modal-options"><i
+                            class="fas fa-ellipsis-h"></i></button>
+                    <div class="p-cptn">
+                        <div class="d-flex">
+                            <img width=45 height=45 class="rounded-circle" src="/media/{{visit.avatar}}" alt>
+                            <div class="mx-3 my-auto">
+                                <span class="d-block">{{visit.user.username}}</span>
+                                <small class="">{{i.0.date}} - {{i.0.time}}</small>
+                            </div>
+                        </div>
+                        <div class="mt-3 post-cap" id="{{i.0.pk}}post-cap">
+                            <span class="post-cap-less" id="{{i.0.pk}}post-cap-less">{{i.0.caption|linebreaks}}</span>
+                        </div>
+                    </div>
+                    <div class="p-img text-center bg-dark">
+                        <img src="/media/{{i.0.img}}" alt>
+                    </div>
+                    <div id="{{i.0.pk}}updater">
+                        <div id="{{i.0.pk}}up">
+                            <div class="opn px-3 my-1">
+                                <div class="row">
+                                    {% if auth.user != visit.user and auth != None %}
+                                    {% if i.1 == 0 %}
+                                    <button id="{{i.0.pk}}" name="like"
+                                        class="far fa-thumbs-up btn l-b-mc col-md-4 like-mc like-sl">
+                                        {{i.2}}
+                                    </button>
+                                    {% else %}
+                                    <button id="{{i.0.pk}}" name="unlike"
+                                        class="far fa-thumbs-up btn l-b-mc col-md-4 like-mc unlike-sl">
+                                        {{i.2}}
+                                    </button>
+                                    {% endif %}
+                                    {% elif auth.user == visit.user and auth != None %}
+                                    <button id="{{i.0.pk}}" class="far fa-thumbs-up btn l-b-mc col-md-4">
+                                        {{i.2}}
+                                    </button>
+                                    {% elif auth == None %}
+                                    <button class="far fa-thumbs-up btn l-b-mc col-md-4"
+                                        onclick='logInmodalTitle("Log in to like")' data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                        {{i.2}}
+                                    </button>
+                                    {% endif %}
+
+
+                                    <button onclick="toggleComment('{{i.0.pk}}comments')"
+                                        class="far fa-comment btn c-b-mc col-md-4">
+                                        {{i.3}}
+                                    </button>
+
+                                    <button class="fas fa-share-alt btn s-b-mc col-md-4">
+                                        {{i.2}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="{{i.0.pk}}comments" class="comments px-3"
+                        style="border-top: 1px solid rgba(128, 128, 128, 0.2);">
+                        <div class="add-comment mb-4 mt-3">
+                            <form class="comment-form" name="{{i.0.pk}}">
+                                <input type="text" class="form-control s-inp" id="{{i.0.pk}}comment-inp"
+                                    placeholder="Add your comment...">
+                            </form>
+                        </div>
+                        <div id="{{i.0.pk}}c-list" style="padding-top: 2vh;"></div>
+                        <p class="text-center" id="{{i.0.pk}}c-lm-b">
+                            <button name="{{i.0.pk}}" class="btn btn-primary comment-lm">Load comments</button>
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if not posts %}
+                <h3 class="text-center" style="position: relative;top: 10%;"><strong>{{visit.user.username}}</strong>
+                    has no posts yet!</h3>
+                {% endif %}
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+    $(document).ready(function () {
+        let rating = Number('{{page_rating}}');
+
+        for (let i = 0; i <= rating; i++) {
+            $(`#rating-star-${i}`).css({ 'color': 'deepskyblue', 'font-weight': 'bold' });
+        }
+    });
+
+</script>
+{% endblock %}

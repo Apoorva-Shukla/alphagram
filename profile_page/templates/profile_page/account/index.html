@@ -1,0 +1,31 @@
+{% extends 'profile_page/account/base.html' %}
+
+{% block options %}
+<div class="notification-container mb-3">
+    <button name="notification" class="action-btn btn px-0 fw-bold"><i class="fas fa-bell"></i> Notifications</button>
+</div>
+
+<div class="profile-container mb-3">
+    <button name="profile" class="action-btn btn px-0 fw-bold"><i class="fas fa-user"></i> Profile</button>
+</div>
+
+<div class="friends-container mb-3">
+    <button name="friends" class="action-btn btn px-0 fw-bold"><i class="fas fa-users"></i> Your friends</button>
+</div>
+
+<div class="account-container mb-3">
+    <button name="account" class="action-btn btn px-0 fw-bold"><i class="fas fa-user-circle"></i> Account</button>
+</div>
+
+<div class="privacy-container mb-3">
+    <button name="privacy" class="action-btn btn px-0 fw-bold"><i class="fas fa-lock"></i> Privacy</button>
+</div>    
+
+<div class="security-container mb-3">
+    <button name="security" class="action-btn btn px-0 fw-bold"><i class="fas fa-shield-alt"></i> Security</button>
+</div>
+
+<div class="about-container">
+    <button name="about" class="action-btn btn px-0 fw-bold"><i class="fas fa-info-circle"></i> About</button>
+</div>
+{% endblock %}

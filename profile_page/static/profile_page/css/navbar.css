@@ -1,0 +1,35 @@
+.search-site {
+    border-radius: 3px;
+    background-color: #fafafa;
+    padding: 2px 1vw;
+    text-align: center;
+}
+
+.search-site:focus {
+    background-color: #fafafa;
+    text-align: left;
+}
+
+.nav-custom {
+    background-color: white;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    text-align: center;
+}
+
+.auth-atr {
+    border-radius: 100%;
+}
+
+.dropdown-menu-mobile {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+    .drop-left-menu {
+        display: none;
+    }
+
+    .dropdown-menu-mobile {
+        display: block;
+    }
+}

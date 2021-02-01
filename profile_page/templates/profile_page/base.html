@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+
+<head id='head'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}{%endblock%}</title>
+    {% include 'profile_page/links.html' %}
+
+    {% load static %}
+
+    {%block css%}{%endblock%}
+
+    <link rel="stylesheet" href="{% static 'profile_page/css/index.css' %}">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+
+<body id="body">
+    {% csrf_token %}
+
+    {% include 'profile_page/navbar.html' %}
+
+    {% if auth == None %}
+    <!-- Authenticate Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div>
+                    <h1 class="text-primary fw-bold text-center log-in-title">Log In</h1>
+                </div>
+
+                <div class="mt-3 text-center">
+                    <form class="mod-auth">
+                        <div class="mb-3">
+                            <input id="mod-auth-username" type="text" placeholder="Username" name="username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <input id="mod-auth-password" type="password" placeholder="Password" name="password" class="form-control" required>
+                        </div>
+                        <div class="d-grid gap-2 mx-auto">
+                            <button class="btn btn-primary" type="submit">Log in</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <h6>Don't have an account? <a href="/sign-up/?next={{request.path}}">Sign up</a></h6>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Post options modal -->
+    <div class="modal fade" id="modal-options" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content p-0" id="o-mod">
+                <div class="modal-body p-0" style="padding-left: 0;padding-right: 0;">
+                    <div class="o">
+                        <a style="font-weight: bold;border-bottom: 1px solid rgba(128, 128, 128, 0.2);" class="d-block text-danger" href="#">Report</a>
+                        <a style="font-weight: bold;border-bottom: 1px solid rgba(128, 128, 128, 0.2);" class="d-block text-primary" href="#">Copy link</a>
+                        <a style="font-weight: bold;border-bottom: 1px solid rgba(128, 128, 128, 0.2);" class="d-block text-success" href="#">Share to</a>
+                        <a style="font-weight: bold;" class="d-block text-dark" data-bs-dismiss="modal" href="#">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Options modal -->
+    <div class="modal fade" id="modal-site-options" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content p-0" id="o-mod">
+                <div class="modal-body p-0" style="padding-left: 0;padding-right: 0;">
+                    <div class="o">
+                        <a style="font-weight: bold;border-bottom: 1px solid rgba(128, 128, 128, 0.2);" class="d-block text-success" href="/{{auth.user.username}}/">
+                            <img src="/media/{{auth.avatar}}" width=30 height=30 class="rounded-circle" alt> <span>Logged in as {{auth.user.username}}</span>
+                        </a>
+                        <a style="font-weight: bold;border-bottom: 1px solid rgba(128, 128, 128, 0.2);" class="d-block text-primary" href="/notifications/">
+                            <i class="far fa-bell"></i> <span>Notifications</span>
+                        </a>
+                        <a style="font-weight: bold;border-bottom: 1px solid rgba(128, 128, 128, 0.2);" class="d-block text-danger" href="/log-out/">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                        <a style="font-weight: bold;" class="d-block text-dark" data-bs-dismiss="modal" href="#">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal fade" id="search-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div>
+                    <h1 class="text-primary fw-bold text-center">Search</h1>
+                </div>
+
+                <div class="mt-3 text-center">
+                    <input type="search" id="search-inp" class="form-control search-site" placeholder="Search">
+
+                    <div class="mt-3" id="rst"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {%block body%}{%endblock%}
+
+    {%block js%}{%endblock%}
+
+    {% include 'profile_page/scripts.html' %}
+
+    <script src="{% static '/profile_page/js/utils.js'%}"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // follow, unfollow
+            $(document).on('click', '.fo-b-mc', (e) => {
+                $(e.target).attr('disabled', true);
+                $.ajax({
+                    type: 'POST',
+                    url: '{{request.path}}',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: e.target.name,
+                        follower: '{{auth.user}}',
+                        following: '{{visit.user}}',
+                    },
+                    success: function () {
+                        $(`.atn-container`).load(location.href + ` .atn`);
+                        $(`.stats-container`).load(location.href + ` .stats`);
+                        $(`.data-side-container`).load(location.href + ` .data-side`);
+                    }
+                });
+            });
+
+            // friend, unfriend
+            $(document).on('click', '.fr-b-mc', (e) => {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{request.path}}',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: e.target.name,
+                        s: '{{auth.user}}',
+                        r: '{{visit.user}}',
+                    },
+                    success: function () {
+                        if (e.target.name == 'friend') {
+                            e.target.name = 'unfriend';
+                        } else if (e.target.name == 'unfriend') {
+                            e.target.name = 'friend';
+                        }
+
+                        if ($('.fr-b-mc').html() == '<i class="fas fa-user-friends"></i> Friend') {
+                            $('.fr-b-mc').html('<i class="fas fa-user-friends"></i> Unfriend');
+                        } else if ($('.fr-b-mc').html() == '<i class="fas fa-user-friends"></i> Unfriend') {
+                            $('.fr-b-mc').html('<i class="fas fa-user-friends"></i> Friend');
+                        }
+                    }
+                });
+            });
+
+            // like, unlike
+            $(document).on('click', '.like-mc', (e) => {
+                $(e.target).attr('disabled', true);
+                $.ajax({
+                    type: 'POST',
+                    url: '{{request.path}}',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: e.target.name,
+                        liker: '{{auth.user}}',
+                        post: e.target.id,
+                    },
+                    success: function () {
+                        $(`#${e.target.id}updater`).load(location.href + ` #${e.target.id}up`);
+                        $(`.data-side-container`).load(location.href + ` .data-side`);
+                    }
+                });
+            });
+
+            // Search
+            $(document).on('input', '#search-inp', (e) => {
+                if ($('#search-inp').val() != '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/search/',
+                        dataType: 'json',
+                        data: {
+                            q: $('#search-inp').val(),
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        },
+                        success: function (data) {
+                            let result = $.parseJSON(data.r);
+                            let result_user = $.parseJSON(data.c);
+
+                            let each;
+                            let rstDiv = $('#rst');
+                            let html;
+                            rstDiv.html(``);
+                            for (let i = 0; i < result.length; i++) {
+                                each = result[i];
+                                html = `
+                                <div>
+                                    <div class="d-flex">
+                                        <a href="/${result_user[i].fields.username}/"><img class="rounded-circle" width="90" height=90 src="/media/${each.fields.avatar}" alt></a>
+                                        <div class="m-auto">
+                                            <h4 class="d-block">${result_user[i].fields.first_name} ${result_user[i].fields.last_name}</h4>
+                                            <h4 class="d-block"><a href="/${result_user[i].fields.username}/">@${result_user[i].fields.username}</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                `;
+
+                                rstDiv.append(html);
+                            }
+                        }
+                    });
+                } else {
+                    $('#rst').html('');
+                }
+            });
+
+            // Comments
+            $(document).on('click', '.comment-lm', (e) => {
+                $.ajax({
+                    url: '{{request.path}}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: 'comment_load',
+                        post: e.target.name,
+                        offset: $(`.e-c-${e.target.name}`).length + 1,
+                    },
+                    success: function(data) {
+                        let d = $.parseJSON(data.comments);
+                        let u = $.parseJSON(data.u_d);
+                        let u_ = $.parseJSON(data.u__d);
+                        let ctp = data.c_time_passed;
+                        let total = Number(data.total);
+                        let div = $(`#${e.target.name}c-list`);
+
+                        if (d === null) {
+                            div.append('<h5 class="text-center">No comments!</h5>');
+                            $(`#${e.target.name}c-lm-b`).remove();
+                            return 0;
+                        }
+
+                        let className = `${$(`.e-c-${e.target.name}`).length}e-comment-${e.target.name}`;
+                        for (let i = 0; i < d.length; i++) {
+                            html = `
+                            <div class="e-c-${e.target.name} mb-4 d-flex">
+                                <a href="/${u_[i].fields.username}/"><img class="rounded-circle border" src="/media/${u[i].fields.avatar}" width=55 height=55></a>
+                                <div class="${className}">
+                                    <small class="mx-3 m-auto d-block">
+                                        <a href="/${u_[i].fields.username}/"><strong>${u_[i].fields.username}</strong></a>
+                                        <span class="badge bg-secondary">${ctp[i]}</span>
+                                    </small>
+                                    <span class="mx-3 m-auto d-block">${d[i].fields.comment}</span>
+                                </div>
+                            </div>
+                            `;
+                            div.append(html);
+                            $(`#${e.target.name}c-lm-b`).find('button').text('Load more');
+                        }
+
+                        if ($(`.e-c-${e.target.name}`).length >= total) {
+                            div.append('<h5 class="text-center">Looks like you\'ve digested all comments!</h5>');
+                            $(`#${e.target.name}c-lm-b`).remove();
+                        }
+
+                        readMore(className, 'span', 'mx-3 m-auto', 'd-block');
+                    },
+                });
+            });
+
+            // Add comment
+            $(document).on('submit', '.comment-form', (e) => {
+                e.preventDefault();
+                let c_t = $(`#${e.target.name}comment-inp`).val();
+                $(`#${e.target.name}comment-inp`).val('');
+                $.ajax({
+                    url: '{{request.path}}',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: 'add_comment',
+                        post: e.target.name,
+                        commenter: '{{auth}}',
+                        comment: c_t,
+                    },
+                    success: function(data) {
+                        
+                    },
+                });
+            });
+
+            '{% if auth == None %}'
+            // Sign in modal
+            $(document).on('submit', '.mod-auth', (e) => {
+                e.preventDefault();
+                $.ajax({
+                    url: '/log-in/',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        username: $('#mod-auth-username').val(),
+                        password: $('#mod-auth-password').val(),
+                    },
+                    success: function() {
+                        $('#html').load(location.href + ' #body');
+                    },
+                });
+            });
+            '{% endif %}'
+
+            // Rate
+            $(document).on('click', '.rate-btn', (e) => {
+                e.preventDefault();
+                let rate = e.target.name;
+                $.ajax({
+                    url: '{{request.path}}',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: 'rate',
+                        user: '{{auth}}',
+                        page: '{{visit}}',
+                        rating: rate,
+                    },
+                    beforeSend: function() {
+                        $('.rating').remove();
+                    }, 
+                    success: function() {
+                        alert('Thank you for rating!');
+                    }
+                });
+            });
+
+        });
+
+        $('.comments').hide();
+        function toggleComment(commentBoxId) {
+            $('#'+commentBoxId).toggle('slide');
+        }
+
+        // Read more function
+        function readMore(parentElemClassName, findWhat, bootstrapClass='default', bootstrapClassAfterVisible='default') {
+            let parentElem = document.getElementsByClassName(parentElemClassName);
+            let listElem = [];
+            for (let i = 0; i < parentElem.length; i++) {
+                let childeNodes = parentElem[i].childNodes;
+                for (let k = 0; k < childeNodes.length; k++) {
+                    if (childeNodes[k].nodeName.toLowerCase() == findWhat.toLowerCase()) {
+                        let childElem = childeNodes[k];
+                        if (childElem.innerText.length > 250) {
+                            let duplicateElem = document.createElement('span');
+                            let innerHtml = childElem.innerHTML;
+                            duplicateElem.innerHTML = innerHtml;
+                            duplicateElem.classList = 'dup-el d-none' + ' ' + bootstrapClass;
+                            listElem.push([duplicateElem, parentElem[i]]);
+                            childElem.innerText = childElem.innerText.slice(0, 250)+'...';
+
+                            let btn = document.createElement('button');
+                            btn.classList = 'show-more-btn btn px-0 text-primary d-block' + ' ' + bootstrapClass + bootstrapClassAfterVisible;
+                            btn.onclick = (e) => {
+                                e.target.remove();
+                                childElem.remove();
+                                duplicateElem.classList = 'dup-el ' + bootstrapClass + ' ' + bootstrapClassAfterVisible;
+                            };
+                            btn.innerText = 'Show more';
+                            parentElem[i].appendChild(btn);
+                        }
+                    }
+                }
+            }
+
+            for (let i = 0; i < listElem.length; i++) {
+                listElem[i][1].appendChild(listElem[i][0]);
+            }
+        }
+
+        readMore('post-cap', 'span');
+    </script>
+</body>
+
+</html>

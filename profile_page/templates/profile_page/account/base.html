@@ -1,0 +1,63 @@
+{% extends 'profile_page/base.html' %}
+
+{% block title %}{{auth.user.username}} - Settings · Alphagram{% endblock %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'profile_page/css/index.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container my-4">
+    <div class="container d-flex">
+        <img src="/media/{{auth.avatar}}" width=65 height=65 class="rounded-circle" alt>
+        <h4 class="mx-4 m-auto"><a class="text-dark" href="/{{auth.user.username}}/">{{auth.user.first_name}} {{auth.user.last_name}}</a></h4>
+    </div>
+
+    <div class="container search-container mt-4">
+        <div class="search-setting mb-3">
+            <input type="text" class="form-control s-inp" style="background-color: transparent;" placeholder="Search">
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <div class="container main">
+        <div class="content">
+            {% block options %}{% endblock %}
+        </div>
+    </div>
+
+    <div class="container">
+        <hr style="color: rgba(128, 128, 128, 0.8);">
+        <div class="notification-container">
+            <button class="btn px-0 fw-bold">Logout</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).on('click', '.action-btn', (e) => {
+        let id = e.target.name;
+        if (id === undefined) {
+            id = e.target.parentElement.name;
+        }
+        $('.main').load(`{{request.path}}${id}/#${id}-container` + ` .${id}-div`);
+
+        let backBtn = document.createElement('button');
+        backBtn.classList = 'btn py-0 px-0 mb-3';
+        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
+        backBtn.style.fontSize = '1.7rem';
+        backBtn.onclick = function() {
+            $('.main').load(location.href + ' .content');
+            backBtn.remove();
+        };
+        document.querySelector('.search-container').append(backBtn);
+    });
+</script>
+{% endblock %}

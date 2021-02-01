@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up · Alphagram</title>
+
+    {% load static %}
+
+    {% include 'profile_page/links.html' %}
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        a {
+            text-emphasis: none;
+        }
+
+        .form {
+            width: 70%;
+            margin: auto;
+            padding: 5vh;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 7px 1px #777;
+        }
+
+        @media screen and (max-width: 700px) {
+            .form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>{{message}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="container">
+        {%csrf_token%}
+        <h1 class="text-primary text-center mt-5 fw-bold">Alphagram</h1>
+        <div class="form mt-5 mb-5">
+            <h5 class="text-center mb-5">Create an account</h5>
+            <form id="sign-up-form" method="POST" action="/sign-up/">{% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <div class="mt-3 row">
+                    <div class="col-md-6 mt-3">
+                        <input type="text" name="first_name" class="form-control p-3" placeholder="First name" required>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <input type="text" name="last_name" class="form-control p-3" placeholder="Last name" required>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <input name="username" id="username" type="text" class="form-control p-3"
+                        placeholder="Choose a unique username" required>
+                    <div class="username-warn"></div>
+                </div>
+                <div class="mt-3">
+                    <input name="password" type="password" class="form-control p-3" placeholder="Choose a password"
+                        required>
+                </div>
+                <div class="mt-3 row">
+                    <h6>Date of birth</h6>
+                    <div class="col-md-4 mt-3">
+                        <select name="date" id="date" class="form-control p-3" required></select>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <select name="month" id="month" class="form-control p-3" required></select>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <select name="year" id="year" class="form-control p-3" required></select>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button name="sign_up" id="sign-up-submit-btn" class="btn btn-primary w-100 btn-lg fw-bold">Sign Up</button>
+                </div>
+            </form>
+            <hr>
+            <div class="mt-3 text-center">
+                <span>Already have an account? <a href="/log-in/">Log in</a></span>
+            </div>
+        </div>
+    </div>
+
+
+    {% include 'profile_page/scripts.html' %}
+
+    <script>
+        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        months.forEach(function (element, index) {
+            document.getElementById('month').innerHTML += `<option>${element}</option>`;
+        })
+
+        for (let i = 1; i <= 31; i++) {
+            document.getElementById('date').innerHTML += `<option>${i}</option>`;
+        }
+
+        let year = new Date().getFullYear();
+        for (let i = year; i >= 1905; i--) {
+            document.getElementById('year').innerHTML += `<option>${i}</option>`;
+        }
+
+        $(document).on('input', '#username', (e) => {
+            $.ajax({
+                url: '/sign-up/',
+                type: 'POST',
+                data: {
+                    name: 'username_unique_check',
+                    username: e.target.value,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {
+                    if (data.username_check == 1) {
+                        $('.username-warn').html('<span class="text-danger">This username has already been taken</span>');
+                        $('#sign-up-submit-btn').attr('disabled', true);
+                    } else {
+                        $('.username-warn').html('');
+                        $('#sign-up-submit-btn').attr('disabled', false);
+                    }
+                },
+            });
+        });
+    </script>
+</body>
+
+</html>

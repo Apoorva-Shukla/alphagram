@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in · Alphagram</title>
+
+    {% load static %}
+
+    {% include 'profile_page/links.html' %}
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        a {
+            text-emphasis: none;
+        }
+
+        .form {
+            width: 70%;
+            margin: auto;
+            padding: 5vh;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 7px 1px #777;
+        }
+
+        @media screen and (max-width: 700px) {
+            .form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>{{message}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="container">
+        <h1 class="text-primary text-center mt-5 fw-bold">Alphagram</h1>
+        <div class="form mt-5">
+            <h5 class="text-center mb-5">Log in to Alphagram</h5>
+            <form action="/log-in/" method="POST">{% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <div class="mt-3">
+                    <input name="username" type="text" class="form-control p-3" placeholder="Username" required>
+                </div>
+                <div class="mt-3">
+                    <input name="password" type="password" class="form-control p-3" placeholder="Password" required>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary w-100 btn-lg fw-bold">Log In</button>
+                </div>
+            </form>
+            <hr>
+            <div class="mt-3 text-center">
+                <span>Don't have an account? <a href="/sign-up/">Sign up</a></span>
+            </div>
+        </div>
+    </div>
+
+
+    {% include 'profile_page/scripts.html' %}
+</body>
+
+</html>

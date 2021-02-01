@@ -1,0 +1,321 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Button */
+
+button:focus {
+    outline: none;
+}
+
+.button {
+    background-color: rgba(0,0,0,0);
+    border: 0;
+    text-align: center;
+    vertical-align: middle;
+    z-index: 0;
+    border-radius: 48px;
+    box-shadow: inset 0 0 0 1px #0a66c2;
+    padding: 10px 24px;
+    color: rgb(10, 102, 194);
+    transition: 0.3s;
+    line-height: 1;
+}
+
+.button:hover {
+    box-shadow: inset 0 0 0 2px #0a66c2;
+    background-color: rgba(10, 102, 194, 0.2);
+}
+
+.black {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.7);
+    color: rgb(0, 0, 0);
+}
+
+.black:hover {
+    box-shadow: inset 0 0 0 2px #222;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.white {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    color: rgb(255, 255, 255);
+}
+
+.white:hover {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.white-in {
+    background-color: #fff;
+    border: 0;
+    text-align: center;
+    vertical-align: middle;
+    z-index: 0;
+    border-radius: 48px;
+    box-shadow: inset 0 0 0 1px #fff;
+    padding: 10px 24px;
+    color: deepskyblue;
+    transition: 0.3s;
+    line-height: 1;
+}
+
+.white-in:hover {
+    background-color: #eee;
+}
+
+/* Button */
+
+
+/* Scroll bar */
+
+/* width */
+
+.container ::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+}
+
+/* Track */
+
+.container ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+
+.container ::-webkit-scrollbar-thumb {
+    background: #999;
+}
+
+/* Handle on hover */
+
+.container ::-webkit-scrollbar-thumb:hover {
+    background-color: #777;
+}
+
+/* --Scroll bar-- */
+
+body {
+    background-color: #fafafa;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Profile */
+.pr-c {
+    display: flex;
+}
+
+.pr-1 {
+    margin-right: 2rem;
+}
+
+.po-c {
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 5px;
+    padding: 2vh;
+    background-color: white;
+    margin-left: 2%;
+    width: 68%;
+}
+
+.all-t-stats {
+    width: 30%;
+}
+
+.k-c {
+    display: flex;
+}
+
+.atr img {
+    padding: 7px;
+    background: white;
+    border-radius: 100%;
+    box-shadow: 0px 0px 11px 2px rgba(0,0,0,1);
+}
+
+.p-name {
+    font-weight: bold;
+    font-size: 1.9rem;
+    display: block;
+}
+
+.u-name {
+    opacity: 0.8;
+    font-size: 1.4rem;
+    display: block;
+    text-transform: capitalize;
+}
+
+.bio {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.post-search-2 {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+    .po-c {
+        margin-left: 0;
+        margin-top: 5vh;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        background-color: transparent;
+        width: 100%;
+    }
+    
+    .all-t-stats {
+        width: 100%;
+    }
+
+    .k-c {
+        flex-direction: column;
+    }
+
+    .pr-c {
+        flex-direction: column;
+    }
+
+    .e-pt {
+        background-color: white;
+    }
+
+    .related-page-div {
+        display: flex;
+        overflow: auto;
+    }
+
+    .related-page-div .e-rp {
+        border-bottom: 1px solid grey;
+        margin: 5px;
+        padding: 1rem;
+        margin-right: 2rem;
+    }
+
+    .post-search-2 {
+        display: block;
+    }
+
+    .post-search {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .atr img {
+        max-width: 100%;
+        height: auto;
+        width: auto;
+    }
+}
+
+/* Posts */
+
+.e-pt {
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    margin-bottom: 5vh;
+}
+
+.p-img img {
+    max-height: 80vh;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+}
+
+.p-cptn {
+    padding: 2vh;
+}
+
+.l-b-mc, .c-b-mc, .s-b-mc {
+    font-size: 1.2rem;
+    border-radius: 2px;
+}
+
+.l-b-mc:hover, .c-b-mc:hover, .s-b-mc:hover {
+    background-color: #ebebeb;
+    border-radius: 0;
+}
+
+.l-b-mc:focus, .l-b-mc:active:focus, .l-b-mc:active:focus, .c-b-mc:focus, .c-b-mc:active:focus, .c-b-mc:active:focus, .s-b-mc:focus, .s-b-mc:active:focus, .s-b-mc:active:focus {
+    box-shadow: none;
+}
+
+/* Modal */
+
+.modal-content {
+    border-radius: 10px;
+    padding: 3vh;
+}
+
+/* would like to log in */
+
+.white-div {
+    background-color: white;
+}
+
+.wld-lk-loin, .related-pages, .about, .community, .rating, .rate-preview {
+    padding: 2vh;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 5px;
+}
+
+/* Post Options Modal */
+
+.post-menu {
+    font-size: 2.2rem;
+}
+
+.o .d-block {
+    padding: 1rem;
+    text-align: center;
+}
+
+.o .d-block:focus {
+    background-color: whitesmoke;
+    outline: none;
+}
+
+#o-mod {
+    background-color: white !important;
+    border-radius: 16px;
+}
+
+/* Like */
+
+.unlike-sl>i, .unlike-sl {
+    font-weight: bold;
+}
+
+.like-sl>i, .like-sl {
+    font-weight: normal;
+}
+
+/* input */
+
+.s-inp {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.s-inp:focus {
+    box-shadow: none;
+}
+
+/* comments */
+.comments {
+    max-height: 60vh;
+    overflow-y: auto;
+}
