@@ -119,8 +119,6 @@
 
     {% include 'profile_page/scripts.html' %}
 
-    <script src="{% static '/profile_page/js/utils.js'%}"></script>
-
     <script>
         $(document).ready(function () {
 
@@ -283,6 +281,8 @@
                         }
 
                         readMore(className, 'span', 'mx-3 m-auto', 'd-block');
+                        $(`.${className} .dup-el`).addClass(`cmnt-${e.target.name}`);
+                        tagDetection(`cmnt-${e.target.name}`);
                     },
                 });
             });
@@ -332,7 +332,7 @@
                 e.preventDefault();
                 let rate = e.target.name;
                 $.ajax({
-                    url: '{{request.path}}',
+                    url: '/{{visit.user.username}}/',
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
@@ -350,6 +350,45 @@
                 });
             });
 
+            // Fetch tagged user's profile data
+            $(document).on('mouseover', '.tagged-link', (e) => {
+                e.preventDefault();
+                let name = e.target.name;
+                $.ajax({
+                    url: '/{{visit.user.username}}/',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        name: 'tagged_user_profile',
+                        username: name.replace('tagged-', ''),
+                    },
+                    success: function(data) {
+                        let profileData = $.parseJSON(data.profile)[0];
+                        let userData = $.parseJSON(data.user)[0];
+                        let follower = $.parseJSON(data.follower);
+                        let following = $.parseJSON(data.following);
+                        let posts = $.parseJSON(data.posts);
+
+                        let elems = document.getElementsByName(name);
+                        for (let j = 0; j < elems.length; j++) {
+                            elems[j].classList.remove('tagged-link');
+                            elems[j].parentNode.innerHTML += `
+                            <span class="tooltip-content clearfix">
+                                <img src="/media/${profileData.fields.avatar}/">
+                                <span class="tooltip-text">
+                                    <h3>${userData.fields.first_name} ${userData.fields.last_name}</h3>
+                                    <h4>@${userData.fields.username}</h4>
+                                    <p class="tagged-link-tooltip-bio-${e.target.name.replace('-tagged')}">${profileData.fields.bio}</p>
+                                    <span class="my-1">
+                                        <strong>${posts}</strong> posts • <a class="text-dark" href="/followers/"><strong>${follower}</strong> followers</a> • <a class="text-dark" href="/following/"><strong>${following}</strong> following</a>
+                                    </span>
+                                </span>
+                            </span>`;
+                        }
+                        tagDetection(`tagged-link-tooltip-bio-${e.target.name.replace('-tagged')}`, false);
+                    },
+                })
+            });
         });
 
         $('.comments').hide();
@@ -368,8 +407,8 @@
                         let childElem = childeNodes[k];
                         if (childElem.innerText.length > 250) {
                             let duplicateElem = document.createElement('span');
-                            let innerHtml = childElem.innerHTML;
-                            duplicateElem.innerHTML = innerHtml;
+                            let innerText = childElem.innerText;
+                            duplicateElem.innerHTML = innerText;
                             duplicateElem.classList = 'dup-el d-none' + ' ' + bootstrapClass;
                             listElem.push([duplicateElem, parentElem[i]]);
                             childElem.innerText = childElem.innerText.slice(0, 250)+'...';
@@ -393,7 +432,62 @@
             }
         }
 
+        // tag detection
+        function tagDetection(parentElemClassName, giveToolTip=true) {
+            let parentElem = document.getElementsByClassName(parentElemClassName);
+            for (let i = 0; i < parentElem.length; i++) {
+                let eachElem = parentElem[i];
+                let text = eachElem.innerText;
+                if (text.includes('@')) {
+                    let textList = text.split(' ');
+                    for (let x = 0; x < textList.length; x++) {
+                        if (textList[x][0] == '@') {
+                            $.ajax({
+                                url: '/{{visit.user.username}}/',
+                                async: false,
+                                type: 'POST',
+                                data: {
+                                    name: 'user_exists',
+                                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                                    username: textList[x].replace('@', ''),
+                                },
+                                success: function(data) {
+                                    if (data.exists) {
+                                        if (giveToolTip) {
+                                            textList[x] = `
+                                            <span class="mytooltip tooltip-effect-1">
+                                                <a name="tagged-${textList[x].replace('@', '')}" class="tooltip-item tagged-link" href="/${textList[x].replace('@', '')}/">${textList[x]}</a>
+                                            </span>
+                                            `;
+                                        } else {
+                                            textList[x] = `
+                                            <span class="mytooltip tooltip-effect-1">
+                                                <a class="tooltip-item tagged-link" href="/${textList[x].replace('@', '')}/">${textList[x]}</a>
+                                            </span>
+                                            `;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    let finalized = '';
+                    textList.forEach((item, index) => {
+                        if (textList[index + 1] !== undefined) {
+                            finalized += item + ' ';
+                        } else {
+                            finalized += item;
+                        }
+                    });
+
+                    parentElem[i].innerHTML = finalized;
+                }
+            }
+        }
+
         readMore('post-cap', 'span');
+        tagDetection('dup-el');
+        tagDetection('bio-p');
     </script>
 </body>
 

@@ -8,7 +8,7 @@ def getcurrentusername(instance, filename):
     return f"{instance.user.username}/avatar/{filename}/"
 
 # Profile related variables here
-profile_settings_json = {"profile_photo": "everyone","profile_bio": "everyone","posts": "everyone","last_online": "nobody"}
+profile_settings_json = {"test": "test"}
 
 class Profile(models.Model):
     '''

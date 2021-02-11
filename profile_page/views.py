@@ -1,3 +1,5 @@
+import json
+from django.db import connections
 from django.db.models.query import ValuesListIterable
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
@@ -144,6 +146,37 @@ def profile_page(request, username):
             rating = request.POST.get('rating', '')
 
             Rate(user=user, page=page, rating=int(rating)).save()
+
+        # User exists or not
+        elif request.POST.get('name', '') == 'user_exists':
+            user = User.objects.filter(username=request.POST.get('username', '')).first()
+            if user == None:
+                return JsonResponse(data={
+                    'exists': False,
+                })
+            return JsonResponse(data={
+                'exists': True,
+            })
+
+        elif request.POST.get('name', '') == 'tagged_user_profile':
+            username = request.POST.get('username', '')
+            user = User.objects.filter(username=username)
+            profile = Profile.objects.filter(user=user.first())
+
+            following = Follow.objects.filter(follower=user.first()).count()
+            follower = Follow.objects.filter(following=user.first()).count()
+            posts = Post.objects.filter(user=user.first()).count()
+
+            u = serializers.serialize('json', user)
+            p = serializers.serialize('json', profile)
+
+            return JsonResponse(data={
+                'user': u,
+                'profile': p,
+                'following': following,
+                'follower': follower,
+                'posts': posts,
+            })
 
     visit_user = get_object_or_404(User, username=username)
 

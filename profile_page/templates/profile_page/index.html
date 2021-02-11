@@ -1,6 +1,6 @@
 {% extends 'profile_page/base.html' %}
 
-{% block title %}{{visit.user.username}} · Alphagram{% endblock %}
+{% block title %}{{visit.user.username}} • Alphagram{% endblock %}
 
 {% load static %}
 
@@ -16,6 +16,10 @@
             <div class="pr-1">
                 <div class="atr">
                     <img width=260 height=260 src="/media/{{visit.avatar}}" alt>
+                    <div class="mx-4 flex-p-u-name">
+                        <span class="p-name mt-3">{{visit.user.first_name}} {{visit.user.last_name}}</span>
+                        <span class="u-name mb-3">@{{visit.user.username}}</span>
+                    </div>
                 </div>
             </div>
             <div class="pr-2">
@@ -24,7 +28,7 @@
                 <span class="u-name mb-3">@{{visit.user.username}}</span>
 
                 <div class="bio mb-3">
-                    <p>{{visit.bio}}</p>
+                    <p class="bio-p">{{visit.bio}}</p>
                 </div>
 
                 <div class="stats-container">
@@ -94,7 +98,7 @@
                 {% if rated == 0 %}
                 <div class="rating mb-2 white-div" style="font-size: 1.6rem;">
                     <h6 class="mb-3"><strong>How do you rate this page</strong></h6>
-                    <div class="text-center d-flex" style="overflow: auto;">
+                    <div class="d-flex" style="overflow: auto;">
                         <button name="1" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
                         <button name="2" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
                         <button name="3" class="rate-btn btn far fa-star" style="font-size: inherit;"></button>
@@ -123,7 +127,7 @@
                 {% if num_of_people_rated != 0 %}
                 <div class="rate-preview white-div mb-2" style="font-size: 1.6rem;">
                     <h6 class="mb-3"><strong>Based on the rating of {{num_of_people_rated}} people</strong></h6>
-                    <div class="text-center d-flex" style="overflow: auto;">
+                    <div class="d-flex" style="overflow: auto;">
                         <span class="btn far fa-star" id="rating-star-1"
                             style="font-size: inherit;cursor: auto;"></span>
                         <span class="btn far fa-star" id="rating-star-2"
@@ -155,17 +159,36 @@
                 <div class="related-pages white-div mb-2">
                     <h6 class="mb-3"><strong>Related Pages</strong></h6>
                     <div class="related-page-div">
-                        <div class="mb-3 e-rp">
-                            <div class="d-flex">
-                                <img style="border-radius: 100%;" width=90 height=90 src="/media/owner/avatar/logo.jpg" alt="">
-                                <span class="d-block mx-3 m-auto">Apoorva</span>
+                        <div class="mb-2 e-rp text-center card-blue">
+                            <img style="border-radius: 100%;" width=90 height=90 src="/media/owner/avatar/login.png" alt="">
+                            <h5 class="d-block m-2">Apoorva</h5>
+                            <div style="max-height: 10rem;overflow-y: hidden;">
+                                <small>Hitman Is A Stealth Video Game Series Developed By The Danish Developer IO Interactive, Previously Published By Eidos Interactive And Square Enix.</small>
                             </div>
-                            <div class="btn-group w-100 mt-3" role="group">
-                                <button type="button" class="button mx-1">Follow</button>
-                                <button type="button" class="button mx-1">Visit page</button>
+                            <div class="w-100 mt-3">
+                                <button type="button" class="button w-100">Follow</button>
                             </div>
                         </div>
-                        <hr>
+                        <div class="mb-2 e-rp text-center card-blue">
+                            <img style="border-radius: 100%;" width=90 height=90 src="/media/owner/avatar/login.png" alt="">
+                            <h5 class="d-block m-2">Apoorva</h5>
+                            <div style="max-height: 10rem;overflow-y: hidden;">
+                                <small>Hitman Is A Stealth Video Game Series Developed By The Danish Developer IO Interactive, Previously Published By Eidos Interactive And Square Enix.</small>
+                            </div>
+                            <div class="w-100 mt-3">
+                                <button type="button" class="button w-100">Follow</button>
+                            </div>
+                        </div>
+                        <div class="mb-2 e-rp text-center card-blue">
+                            <img style="border-radius: 100%;" width=90 height=90 src="/media/owner/avatar/login.png" alt="">
+                            <h5 class="d-block m-2">Apoorva</h5>
+                            <div style="max-height: 10rem;overflow-y: hidden;">
+                                <small>Hitman Is A Stealth Video Game Series Developed By The Danish Developer IO Interactive, Previously Published By Eidos Interactive And Square Enix.</small>
+                            </div>
+                            <div class="w-100 mt-3">
+                                <button type="button" class="button w-100">Follow</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -197,47 +220,39 @@
                             <span class="post-cap-less" id="{{i.0.pk}}post-cap-less">{{i.0.caption|linebreaks}}</span>
                         </div>
                     </div>
-                    <div class="p-img text-center bg-dark">
+                    <div class="p-img text-center border-top">
                         <img src="/media/{{i.0.img}}" alt>
                     </div>
                     <div id="{{i.0.pk}}updater">
                         <div id="{{i.0.pk}}up">
-                            <div class="opn px-3 my-1">
-                                <div class="row">
-                                    {% if auth.user != visit.user and auth != None %}
+                            <div class="opn d-flex px-3 my-2" style="justify-content: center;">
+                                {% if auth.user != visit.user and auth != None %}
                                     {% if i.1 == 0 %}
-                                    <button id="{{i.0.pk}}" name="like"
-                                        class="far fa-thumbs-up btn l-b-mc col-md-4 like-mc like-sl">
-                                        {{i.2}}
-                                    </button>
+                                        <button id="{{i.0.pk}}" name="like"
+                                            class="far fa-thumbs-up btn l-b-mc like-mc like-sl">
+                                            {{i.2}}
+                                        </button>
                                     {% else %}
-                                    <button id="{{i.0.pk}}" name="unlike"
-                                        class="far fa-thumbs-up btn l-b-mc col-md-4 like-mc unlike-sl">
-                                        {{i.2}}
-                                    </button>
+                                        <button id="{{i.0.pk}}" name="unlike"
+                                            class="far fa-thumbs-up btn l-b-mc like-mc unlike-sl">
+                                            {{i.2}}
+                                        </button>
                                     {% endif %}
                                     {% elif auth.user == visit.user and auth != None %}
-                                    <button id="{{i.0.pk}}" class="far fa-thumbs-up btn l-b-mc col-md-4">
-                                        {{i.2}}
-                                    </button>
+                                        <button id="{{i.0.pk}}" class="far fa-thumbs-up btn l-b-mc">
+                                            {{i.2}}
+                                        </button>
                                     {% elif auth == None %}
-                                    <button class="far fa-thumbs-up btn l-b-mc col-md-4"
-                                        onclick='logInmodalTitle("Log in to like")' data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                        {{i.2}}
-                                    </button>
-                                    {% endif %}
+                                        <button class="far fa-thumbs-up btn l-b-mc" onclick='logInmodalTitle("Log in to like")' data-bs-toggle="modal" data-bs-target="#exampleModal">{{i.2}}</button>
+                                {% endif %}
 
 
-                                    <button onclick="toggleComment('{{i.0.pk}}comments')"
-                                        class="far fa-comment btn c-b-mc col-md-4">
-                                        {{i.3}}
-                                    </button>
+                                <button onclick="toggleComment('{{i.0.pk}}comments')"
+                                    class="fas fa-comments btn c-b-mc">
+                                    {{i.3}}
+                                </button>
 
-                                    <button class="fas fa-share-alt btn s-b-mc col-md-4">
-                                        {{i.2}}
-                                    </button>
-                                </div>
+                                <button class="fas fa-share btn s-b-mc"></button>
                             </div>
                         </div>
                     </div>
@@ -274,6 +289,8 @@
 
 
 {% block js %}
+<script src="{% static '/profile_page/js/utils.js'%}"></script>
+
 <script>
 
     $(document).ready(function () {
